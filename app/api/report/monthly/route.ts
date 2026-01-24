@@ -52,8 +52,8 @@ export async function GET(req: Request) {
     const categoryTotals: { [key: string]: number } = {};
     let grandTotal = 0;
 
-    completedLists.forEach(list => {
-      list.items.forEach(item => {
+    completedLists.forEach((list: typeof completedLists[0]) => {
+      list.items.forEach((item: typeof list.items[0]) => {
         const price = Number(item.price) || 0; // Veritabanından Decimal olarak gelir, Number'a çeviriyoruz
         const categoryName = item.product.category.name; // Örn: "Metro"
 
