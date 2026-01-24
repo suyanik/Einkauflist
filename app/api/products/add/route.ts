@@ -22,10 +22,7 @@ export async function POST(req: Request) {
     // 1. Adım: Yapay Zeka ile Çeviri (Gemini AI Auto-Translation)
     // Sistemden Almanca ve Punjabi isimlerini istiyoruz
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json",
-      },
+      model: "gemini-2.5-flash",
     });
 
     const prompt = `You are a professional translator. Translate the following Turkish food product name to German and Punjabi (Gurmukhi script).
@@ -42,7 +39,10 @@ Do not include any explanations, just the JSON object.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const text = response.text();
+    let text = response.text();
+
+    // Gemini bazen markdown code block içinde JSON döndürür, temizle
+    text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
     // JSON parse et
     const translationData = JSON.parse(text);
