@@ -196,6 +196,71 @@ Detaylı şema için `prisma/schema.prisma` dosyasına bakın.
 - Session yönetimi basit base64 encoding kullanıyor (production için JWT tercih edin)
 - API rate limiting yok (production için ekleyin)
 
+## Deployment (Production)
+
+### Vercel ile Deploy (Önerilen)
+
+#### Otomatik Deploy (GitHub Integration)
+
+1. **Vercel'e Git**: https://vercel.com/new
+2. **GitHub'ı bağlayın** ve `suyanik/Einkauflist` repo'sunu import edin
+3. **Environment Variables** ekleyin:
+   ```
+   DATABASE_URL=your-production-database-url
+   DIRECT_DATABASE_URL=your-direct-database-url
+   GEMINI_API_KEY=your-gemini-api-key
+   NODE_ENV=production
+   ```
+4. **Deploy** butonuna basın
+
+**Avantajlar**:
+- Her `git push` otomatik deploy tetikler
+- Preview deployments her PR için
+- Automatic HTTPS ve global CDN
+- Zero-config Next.js support
+
+#### Manuel Deploy (CLI)
+
+```bash
+# 1. Vercel CLI'a giriş yapın
+vercel login
+
+# 2. İlk deploy
+vercel
+
+# 3. Production deploy
+vercel --prod
+```
+
+### Production Database Seçenekleri
+
+Local Prisma Postgres yerine production için:
+
+1. **Vercel Postgres** (önerilen)
+   ```bash
+   vercel postgres create
+   ```
+
+2. **Supabase**
+   - https://supabase.com
+   - PostgreSQL + real-time + storage
+
+3. **Railway**
+   - https://railway.app
+   - Kolay PostgreSQL setup
+
+4. **Neon**
+   - https://neon.tech
+   - Serverless PostgreSQL
+
+### Post-Deployment Checklist
+
+- [ ] Environment variables doğru ayarlandı
+- [ ] Database migration çalıştırıldı (`npx prisma migrate deploy`)
+- [ ] Seed data eklendi (opsiyonel)
+- [ ] GEMINI_API_KEY test edildi
+- [ ] Admin ve Staff PIN'leri değiştirildi (güvenlik)
+
 ## Katkıda Bulunma
 
 1. Fork edin
