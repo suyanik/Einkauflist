@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     // 1. Adım: Yapay Zeka ile Çeviri (Gemini AI Auto-Translation)
     // Sistemden Almanca ve Punjabi isimlerini istiyoruz
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
     });
 
     const prompt = `You are a professional translator. Translate the following Turkish food product name to German and Punjabi (Gurmukhi script).
