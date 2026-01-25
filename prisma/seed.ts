@@ -52,16 +52,25 @@ async function main() {
   });
 
   // Mutfak personeli
-  const staff = await prisma.user.upsert({
-    where: { phone: '+905009876543' },
-    update: {},
-    create: {
-      name: 'Mutfak Personeli',
-      phone: '+905009876543',
-      role: 'STAFF',
-      pin: '1234' // Staff için varsayılan PIN
-    }
+  const staff = await prisma.user.findFirst({
+    where: { phone: '+905009876543' }
   });
+
+  if (!staff) {
+    await prisma.user.create({
+      data: {
+        name: 'Mutfak Personeli',
+        phone: '+905009876543',
+        role: 'STAFF',
+        pin: '0000' // Staff için varsayılan PIN
+      }
+    });
+  } else {
+    await prisma.user.update({
+      where: { phone: '+905009876543' },
+      data: { pin: '0000' }
+    });
+  }
 
   console.log('✅ 2 kullanıcı oluşturuldu');
 
