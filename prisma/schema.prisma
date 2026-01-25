@@ -2,6 +2,7 @@
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -12,9 +13,9 @@ generator client {
 model User {
   id        String   @id @default(uuid())
   name      String
-  phone     String   @unique // OTP giriş için telefon numarası
-  pin       String   // 4 haneli PIN kodu
-  role      Role     @default(STAFF) // ADMIN veya STAFF
+  phone     String   @unique
+  pin       String
+  role      Role     @default(STAFF)
   lists     ShoppingList[]
   createdAt DateTime @default(now())
 }
@@ -27,8 +28,8 @@ enum Role {
 // Kategoriler (İçecek, Sebze, Metro, Genel)
 model Category {
   id       String   @id @default(uuid())
-  name     String   // Yönetici için (Örn: "İçecekler")
-  slug     String   @unique // URL için (icecekler)
+  name     String
+  slug     String   @unique
   products Product[]
 }
 
@@ -37,16 +38,12 @@ model Product {
   id          String   @id @default(uuid())
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
-  
-  // Çoklu Dil Alanları
-  name_tr     String   // Türkçe: Domates
-  name_de     String   // Almanca: Tomate
-  name_pa     String   // Punjabi: ਟਮਾਟਰ (ਟਮਾਟਰ)
-  
-  image       String?  // Ürün fotoğrafı URL'si
-  unit        String   // kg, paket, litre
-  lastPrice   Decimal  @db.Decimal(10, 2) @default(0) // Raporlama için son Euro fiyatı
-  
+  name_tr     String
+  name_de     String
+  name_pa     String
+  image       String?
+  unit        String
+  lastPrice   Decimal  @db.Decimal(10, 2) @default(0)
   listItems   ListItem[]
   createdAt   DateTime @default(now())
 }
@@ -54,10 +51,9 @@ model Product {
 // Alışveriş Listeleri (Siparişler)
 model ShoppingList {
   id        String     @id @default(uuid())
-  status    ListStatus @default(PENDING) // PENDING (Hazırlanıyor), COMPLETED (Tamamlandı)
+  status    ListStatus @default(PENDING)
   createdBy String
   creator   User       @relation(fields: [createdBy], references: [id])
-  
   items     ListItem[]
   createdAt DateTime   @default(now())
 }
@@ -72,10 +68,8 @@ model ListItem {
   id             String       @id @default(uuid())
   shoppingListId String
   shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
-  
   productId      String
   product        Product      @relation(fields: [productId], references: [id])
-  
-  quantity       Float        // Mutfak personeli girer (Örn: 2.5 kg)
-  price          Decimal?     @db.Decimal(10, 2) // Siz marketten dönünce girersiniz (Örn: €3.50)
+  quantity       Float
+  price          Decimal?     @db.Decimal(10, 2)
 }
